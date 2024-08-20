@@ -9,12 +9,12 @@ import {
   GitGraph,
 } from "lucide-react";
 
-import { Button } from "~/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "~/components/ui/tooltip";
+} from "@/components/ui/tooltip";
 
 export default function Sidebar() {
   return (
