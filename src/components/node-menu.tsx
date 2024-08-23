@@ -15,7 +15,7 @@ export default function NodeMenu({ isLeaf }: { isLeaf: boolean }) {
   return (
     <Dialog>
       <NodeToolbar isVisible={undefined} position={Position.Right}>
-        <nav className="grid gap-1 overflow-hidden rounded-xl border-2 border-border/50 bg-background">
+        <nav className="grid gap-1 overflow-hidden rounded-xl border-2 border-border bg-background">
           {isLeaf ? (
             <Tooltip>
               <TooltipTrigger asChild>
