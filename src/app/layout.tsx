@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import Header from "@/components/header";
 
 export const metadata: Metadata = {
   title: "vcv",
@@ -18,7 +19,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html
+      lang="en"
+      className={`${GeistSans.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <TRPCReactProvider>
           <ThemeProvider
@@ -27,7 +32,14 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+            <TooltipProvider delayDuration={0}>
+              <div className="grid h-screen w-full">
+                <div className="flex flex-col">
+                  <Header />
+                  <div className="flex flex-1">{children}</div>
+                </div>
+              </div>
+            </TooltipProvider>
           </ThemeProvider>
         </TRPCReactProvider>
         <Toaster position="top-center" />
