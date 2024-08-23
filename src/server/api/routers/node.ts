@@ -8,6 +8,8 @@ import { metadata } from "@/app/layout";
 export const nodeRouter = createTRPCRouter({
   getNodes: publicProcedure.query(async () => {
     await dbConnect();
-    return "test";
+    // get all nodes
+    const nodes = await NodeModel.find();
+    return nodes;
   }),
 });
