@@ -1,6 +1,6 @@
 "use client";
 import * as d3 from "d3";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   ReactFlow,
   useNodesState,
@@ -13,7 +13,7 @@ import CustomNode from "./custom-node";
 import LeafNode from "./leaf-node";
 import RootNode from "./root-node";
 import type { CustomNodeType } from "./node";
-import { convertData, InputData } from "@/lib/utils";
+import { convertArrayToObject, convertData, InputData } from "@/lib/utils";
 
 const applyLayout = (nodes: CustomNodeType[], edges: Edge[]) => {
   if (nodes.length === 0) return { nodes, edges };
@@ -30,9 +30,14 @@ const applyLayout = (nodes: CustomNodeType[], edges: Edge[]) => {
   );
 
   return {
-    nodes: layout
-      .descendants()
-      .map((node) => ({ ...node.data, position: { x: node.x, y: node.y } })),
+    nodes: layout.descendants().map((node) => ({
+      ...node.data,
+      data: {
+        ...node.data.data,
+        d3Node: node,
+      },
+      position: { x: node.x, y: node.y },
+    })),
     edges,
   };
 };
@@ -42,16 +47,91 @@ export default function Three({ data }: { data: InputData }) {
     () => convertData(data),
     [data],
   );
-  const { nodes: layoutedNodes, edges: layoutedEdges } = applyLayout(
-    initialNodes,
-    initialEdges,
+  const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(
+    () => applyLayout(initialNodes, initialEdges),
+    [initialNodes, initialEdges],
   );
-  const [nodes, , onNodesChange] = useNodesState([...layoutedNodes]);
-  const [edges] = useEdgesState([...layoutedEdges]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([...layoutedNodes]);
+  const [edges, setEdges] = useEdgesState([...layoutedEdges]);
+  const [selectedNode, setSelectedNode] = React.useState<
+    CustomNodeType | undefined
+  >();
   const nodeTypes: NodeTypes = useMemo(
     () => ({ custom: CustomNode, leaf: LeafNode, root: RootNode }),
     [],
   );
+
+  useEffect(() => {
+    setNodes([...layoutedNodes]);
+    setEdges([...layoutedEdges]);
+  }, [layoutedNodes, layoutedEdges]);
+
+  const highlightPath = (
+    ancestors: d3.HierarchyPointNode<CustomNodeType>[],
+  ) => {
+    if (ancestors) {
+      const lookupNodes = convertArrayToObject(ancestors);
+      setNodes((prevNodes) =>
+        prevNodes?.map((node) => {
+          const highlight = node.id in lookupNodes;
+
+          return {
+            ...node,
+            style: {
+              ...node.style,
+              opacity: highlight ? 1 : 0.25,
+            },
+          };
+        }),
+      );
+
+      setEdges((prevEdges) =>
+        prevEdges?.map((edge) => {
+          const highlight =
+            edge.source in lookupNodes && edge.target in lookupNodes;
+
+          return {
+            ...edge,
+            style: {
+              ...edge.style,
+              opacity: highlight ? 1 : 0.25,
+            },
+          };
+        }),
+      );
+    }
+  };
+
+  const resetNodeStyles = () => {
+    setNodes((prevNodes) => {
+      return prevNodes?.map((node) => {
+        return {
+          ...node,
+          style: {
+            ...node.style,
+            opacity: 1,
+          },
+        };
+      });
+    });
+    setEdges((prevEdges) =>
+      prevEdges?.map((edge) => {
+        return {
+          ...edge,
+          style: {
+            ...edge.style,
+            opacity: 1,
+          },
+        };
+      }),
+    );
+  };
+
+  useEffect(() => {
+    if (selectedNode && selectedNode.data.d3Node) {
+      highlightPath(selectedNode.data.d3Node.ancestors());
+    }
+  }, [selectedNode]);
 
   return (
     <ReactFlow
@@ -59,11 +139,20 @@ export default function Three({ data }: { data: InputData }) {
       edges={edges}
       nodeTypes={nodeTypes}
       onNodesChange={onNodesChange}
+      elementsSelectable={true}
       fitView
       edgesFocusable={false}
       edgesReconnectable={false}
       nodesDraggable={false}
       nodesConnectable={false}
+      onSelectionChange={(selectedElements) => {
+        const selectedNode = selectedElements.nodes[0] as CustomNodeType;
+        setSelectedNode(selectedNode);
+      }}
+      onPaneClick={() => {
+        resetNodeStyles();
+        setSelectedNode(undefined);
+      }}
     >
       <Controls
         position="bottom-right"

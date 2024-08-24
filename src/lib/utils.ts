@@ -80,3 +80,23 @@ export function convertData(input: InputData): {
 
   return { nodes, edges };
 }
+
+type DataObject = {
+  data: {
+    id: string;
+    [key: string]: any;
+  };
+};
+
+type ConvertedObject<T extends DataObject> = {
+  [key: string]: T;
+};
+
+export const convertArrayToObject = <T extends DataObject>(
+  array: T[],
+): ConvertedObject<T> =>
+  array.reduce<ConvertedObject<T>>((acc, obj) => {
+    const key = obj.data.id;
+    acc[key] = obj;
+    return acc;
+  }, {});
