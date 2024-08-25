@@ -1,29 +1,58 @@
-# Create T3 App
+# VCV
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Run website locally
 
-## What's next? How do I make an app with this?
+## 1. Install MongoDB (Mac Instructions (Catalina onwards))
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+If you have MongoDB installed on your os you can pass this step.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+you can follow this tutorial: https://zellwk.com/blog/install-mongodb/
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+`brew tap mongodb/brew`
 
-## Learn More
+`brew install mongodb-community`
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+`sudo mkdir -p /System/Volumes/Data/data/db`
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+``sudo chown -R `id -un` /System/Volumes/Data/data/db``
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## 2. Install and Open MongoDB Compass
 
-## How do I deploy this?
+If you have MongoDB installed on your os you can pass this step.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+link: https://www.mongodb.com/try/download/compass
+
+## 3. Start MongoDB
+
+The command depends on your os. If you are using mac os and
+If you installed MongoDB based on the tutorial then you to start MongoDB:
+
+`mongod`
+
+## 4. Start VCV
+
+Only for the first time to install all packages.
+
+`pnpm i`
+
+After all the packages are installed to run the project:
+
+`pnpm dev`
+
+The project should start on `localhost:3000`
+
+## Design File
+
+The figma desing file is included as `VCV.fig` in the root of the repo.
+
+## Design Decisions
+
+The project is built on `Next.js` / `MongoDB` / `tPRC`.
+
+`Next.js` was an obvious choice since it is a fullstack framework. However, the reason I chose `MongoDB` to store data was mostly due to the type of data we keep on the project which was pretty simple and not much heavy operation needed. `tRPC` was something that I also used for the first time. It offers a really seamless integeration with the rest of the stack providing a full type safety through the API.
+
+For the design system I used `shadcn/ui`. It is pretty lightweight and looks great!
+
+The heart of the user interface is the tree visualization which is visualized using `React Flow`. This library provides a really robost api to visualize the tree. Also, gives us enough flexibility and customizablity on the node styling.
+
+The layouting for the tree is done through `d3`. Initially I wanted to also draw the tree using `d3`, but I realized it might get larger and heavier overall and kinda felt out of scope of the project.
