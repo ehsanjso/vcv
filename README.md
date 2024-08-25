@@ -44,6 +44,7 @@ The project should start on `localhost:3000`
 ## Design File
 
 The figma desing file is included as `VCV.fig` in the root of the repo.
+In the figma design file I wrote some thoughts on each part. Mostly, around future work or some of the decisions that were made.
 
 ## Design Decisions
 
