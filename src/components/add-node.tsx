@@ -34,8 +34,8 @@ export default function AddNode({
   nodeName,
   setOpen,
 }: {
-  nodeId: string;
-  nodeName: string;
+  nodeId: string | null;
+  nodeName: string | null;
   setOpen: (open: boolean) => void;
 }) {
   const router = useRouter();

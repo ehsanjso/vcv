@@ -10,8 +10,9 @@ export interface INode extends mongoose.Document {
 const NodeSchema = new mongoose.Schema<INode>(
   {
     prev: {
-      type: String || null,
-      required: true,
+      type: String,
+      required: false,
+      default: null,
     },
     metadata: {
       name: {

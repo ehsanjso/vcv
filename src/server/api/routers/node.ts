@@ -16,7 +16,7 @@ export const nodeRouter = createTRPCRouter({
       const schema = z.object({
         name: z.string().min(1),
         comment: z.string().optional(),
-        prev: z.string(),
+        prev: z.string().nullable(),
       });
       const result = schema.safeParse(v);
       if (!result.success) {

@@ -18,11 +18,11 @@ export default function Node(props: NodeProps<CustomNodeType>) {
         </p>
         <div className="border-t border-border px-1.5 py-1">
           <div className="flex font-mono text-[8px] leading-snug text-muted-foreground">
-            <p className="w-[7.5rem] truncate font-medium">{`id:${props.id}`}</p>
+            <p className="break-all font-medium">{`id:${props.id}`}</p>
           </div>
           {props.data.comment && (
             <div className="flex font-mono text-[8px] leading-snug text-muted-foreground">
-              <p className="w-[7.5rem] truncate font-medium">{`comment:${props.data.comment}`}</p>
+              <p className="break-all font-medium">{`comment:${props.data.comment}`}</p>
             </div>
           )}
         </div>
